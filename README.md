@@ -2,16 +2,14 @@
 
 ## usage
 
-* `services/product.service.js`
+* `services/language.service.js`
 
 ```js
-export default class ProductService {
-	list() {
-		return [
-			{ id: 1, name: 'product 1' },
-			{ id: 2, name: 'product 2' },
-			{ id: 3, name: 'product 3' },
-		];
+export default class LanguageService {
+    _currentLanguage = 'en';
+    
+	currentLanguage() {
+		return this._currentLanguage;
 	}
 }
 ```
@@ -22,15 +20,15 @@ export default class ProductService {
 import ReactDOM from 'react-dom';
 import HotWire from 'hot-wire';
 import { Provider } from 'react-hot-wire';
-import ProductService from './services/product.service';
+import LanguageService from 'services/language.service';
 
 const container = new HotWire().wire({
     services: {
-    	productService: {
-    		class: ProductService,
-    		public: true,
-    	},
-    	// other definitions of services here...
+        languageService: {
+            class: LanguageService,
+            public: true,
+        },
+        // other definitions of services here...
     },
 });
 
@@ -44,21 +42,80 @@ container.then(services => {
 });
 ```
 
-* `components/product-list.component.js`
+* `components/language.component.js`
 
 ```js
 import React, { PureComponent } from 'react';
 import { wire } from 'react-hot-wire';
 
-export class ProductList extends PureComponent {
-    componentDidMount() {
-        console.log(this.props.productService.list());
-    }
-
+export class Language extends PureComponent {
     render() {
-        return null;
+        return this.props.languageService.currentLanguage();
     }
 };
 
-export default wire(ProductList, ['productService']);
+export default wire(Language, ['languageService']);
+```
+
+## advanced usage
+
+### listen for changes
+
+* `hoc/language.hoc.js`
+
+```js
+import React, { PureComponent } from 'react';
+import { wire } from 'react-hot-wire';
+
+export default function () {
+    return class LanguageHOC extends PureComponent {
+        componentDidMount() {
+            this._unregisterListener = this.props.languageService.addChangeListener(() => this.forceUpdate());
+        }
+
+        render() {
+            return (
+                <Component
+                    lang={this.props.languageService.currentLanguage()}
+                    {...this.props}
+                />
+            );
+        }
+
+        componentWillUnmount() {
+            this._unregisterListener();
+        }
+    };
+};
+
+export default wire(LanguageHOC, ['languageService']);
+```
+
+* `components/language.component.js`
+
+```js
+import React, { PureComponent } from 'react';
+import LanguageHOC from 'hoc/language.hoc';
+
+export class Language extends PureComponent {
+    render() {
+        return this.props.lang;
+    }
+};
+
+export default LanguageHOC(Language);
+```
+
+* and small modification in `services/language.service.js` (extends for a `Service`)
+
+```js
+import { Service } from 'react-hot-wire';
+
+export default class LanguageService extends Service {
+    _currentLanguage = 'en';
+    
+	currentLanguage() {
+		return this._currentLanguage;
+	}
+}
 ```
