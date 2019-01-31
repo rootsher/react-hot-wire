@@ -2,15 +2,15 @@
 
 ## usage
 
-* `services/language.service.js`
+* `services/language.service.js` - define example service
 
 ```js
 export default class LanguageService {
     _currentLanguage = 'en';
     
-	currentLanguage() {
-		return this._currentLanguage;
-	}
+    currentLanguage() {
+        return this._currentLanguage;
+    }
 }
 ```
 
