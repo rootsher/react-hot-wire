@@ -70,7 +70,9 @@ import { wire } from 'react-hot-wire';
 export default function () {
     return class LanguageHOC extends PureComponent {
         componentDidMount() {
-            this._unregisterListener = this.props.languageService.addChangeListener(() => this.forceUpdate());
+            this._unregisterListener = this.props.languageService.addChangeListener(
+                () => this.forceUpdate()
+            );
         }
 
         render() {
@@ -114,8 +116,8 @@ import { Service } from 'react-hot-wire';
 export default class LanguageService extends Service {
     _currentLanguage = 'en';
     
-	currentLanguage() {
-		return this._currentLanguage;
-	}
+    currentLanguage() {
+        return this._currentLanguage;
+    }
 }
 ```
