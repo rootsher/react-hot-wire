@@ -44,9 +44,9 @@ container.then(services => {
 });
 ```
 
-* `product-list.component.js`
+* `components/product-list.component.js`
 
-```
+```js
 import React, { PureComponent } from 'react';
 import { wire } from 'react-hot-wire';
 
