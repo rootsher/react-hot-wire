@@ -1,0 +1,8 @@
+{
+  "name": "react-hot-wire",
+  "version": "0.1.0",
+  "main": "src/index.js",
+  "repository": "https://github.com/rootsher/react-hot-wire.git",
+  "author": "Konrad Kowalski <rootsher@gmail.com>",
+  "license": "MIT"
+}
