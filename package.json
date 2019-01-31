@@ -1,6 +1,6 @@
 {
   "name": "react-hot-wire",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "main": "src/index.js",
   "repository": "https://github.com/rootsher/react-hot-wire.git",
   "author": "Konrad Kowalski <rootsher@gmail.com>",

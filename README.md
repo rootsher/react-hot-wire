@@ -67,7 +67,7 @@ export default wire(Language, ['languageService']);
 import React, { PureComponent } from 'react';
 import { wire } from 'react-hot-wire';
 
-export default function () {
+export default function (Component) {
     return class LanguageHOC extends PureComponent {
         componentDidMount() {
             this._unregisterListener = this.props.languageService.addChangeListener(
