@@ -1,5 +1,11 @@
 # react-hot-wire
 
+[![npm version](https://img.shields.io/npm/v/react-hot-wire.svg)](https://www.npmjs.com/package/react-hot-wire)
+[![npm downloads](https://img.shields.io/npm/dm/react-hot-wire.svg)](https://www.npmjs.com/package/react-hot-wire)
+[![GitHub issues](https://img.shields.io/github/issues/rootsher/react-hot-wire.svg)](https://github.com/rootsher/react-hot-wire/issues)
+[![GitHub PRs](https://img.shields.io/github/issues-pr/rootsher/react-async-action.svg)](https://github.com/rootsher/react-hot-wire/pulls)
+[![ISC license](https://img.shields.io/npm/l/react-hot-wire.svg)](https://opensource.org/licenses/ISC)
+
 ## motivation
 
 I needed a React tool that would allow me to separate the view layer with other application layers. I wanted to be able to create services that are completely separated, that know nothing about the view. When I succeeded, there was a problem with injecting these services into individual components (at any application level). For this purpose a `react-hot-wire` was created. It allows to define what services a given component needs, and enables convenient injection. Additionally, the component can react to changes in services by plugging its own listener into the service cycle.
@@ -83,6 +89,8 @@ export class Language extends PureComponent {
 
 export default wire(Language, ['languageService']);
 ```
+
+Now we have injected the selected service into the component, and we can take full advantage of its capabilities. As the service was injected by props, we have the possibility of convenient component testing, substitution of this service, etc.
 
 ## advanced usage
 
