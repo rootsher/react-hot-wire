@@ -145,16 +145,23 @@ export default LanguageHOC(Language);
 
 * and small modification in the example service (extends for a `Service`)
 
-```js
-// services/language.service.js
-
-import { Service } from 'react-hot-wire';
-
-export default class LanguageService extends Service {
-    _currentLanguage = 'en';
-    
-    currentLanguage() {
-        return this._currentLanguage;
-    }
-}
+```diff
+- export default class LanguageService {
++ export default class LanguageService extends Service {
 ```
+
+## API interface
+
+### `Provider`
+
+* prop `services: Object<string, Object>` - services after a resolved container
+
+### `wire`
+
+* `wire(Component: Component, dependencies: string[]): Component`
+
+### `Service`
+
+* `addChangeListener(changeListener: Function): Function`
+
+* `runChangeListeners(): void`

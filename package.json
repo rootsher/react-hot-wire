@@ -1,6 +1,6 @@
 {
   "name": "react-hot-wire",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Dependency Injection in React with hot-wire",
   "scripts": {
     "build": "babel src --out-dir lib",
