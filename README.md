@@ -157,7 +157,7 @@ export default LanguageHOC(Language);
 
 ### `Provider`
 
-* prop `services: Object<string, Object>` - services after a resolved container
+* property `services: Object<string, Object>` - services after a resolved container
 
 ### `wire`
 
