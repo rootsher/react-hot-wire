@@ -147,6 +147,9 @@ export default LanguageHOC(Language);
 
 ```diff
 - export default class LanguageService {
+
++ import { Service } from 'react-hot-wire';
++
 + export default class LanguageService extends Service {
 ```
 
