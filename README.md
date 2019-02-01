@@ -1,10 +1,32 @@
 # react-hot-wire
 
-## usage
+## motivation
 
-* `services/language.service.js` - define example service
+I needed a React tool that would allow me to separate the view layer with other application layers. I wanted to be able to create services that are completely separated, that know nothing about the view. When I succeeded, there was a problem with injecting these services into individual components (at any application level). For this purpose a `react-hot-wire` was created. It allows to define what services a given component needs, and enables convenient injection. Additionally, the component can react to changes in services by plugging its own listener into the service cycle.
+
+## installation
+
+### main package (to integrate with React)
+
+```bash
+$ npm install --save react-hot-wire
+```
+
+### main dependency (to resolve DI container)
+
+```bash
+$ npm install --save hot-wire
+```
+
+## simple usage
+
+First we should define the service(s) to be solved by the `hot-wire` module.
+
+Example service:
 
 ```js
+// services/language.service.js
+
 export default class LanguageService {
     _currentLanguage = 'en';
     
@@ -14,9 +36,11 @@ export default class LanguageService {
 }
 ```
 
-* `index.js`
+Then by using `hot-wire` we create the instances of the services and inject dependencies into the appropriate places (I suggest you see the `hot-wire` tests). Then we pass the solved services to `Provider`:
 
 ```js
+// index.js
+
 import ReactDOM from 'react-dom';
 import HotWire from 'hot-wire';
 import { Provider } from 'react-hot-wire';
@@ -24,6 +48,7 @@ import LanguageService from 'services/language.service';
 
 const container = new HotWire().wire({
     services: {
+    	// this is example usage, we can store definitions whenever we want
         languageService: {
             class: LanguageService,
             public: true,
@@ -42,9 +67,11 @@ container.then(services => {
 });
 ```
 
-* `components/language.component.js`
+Now you would like to inject into a component, at any level, an instance of a selected service. With help comes the `wire` function, which in arguments accepts the component that is to have the service injected, and the array of services to be set in `props`:
 
 ```js
+// components/language.component.js
+
 import React, { PureComponent } from 'react';
 import { wire } from 'react-hot-wire';
 
@@ -59,11 +86,11 @@ export default wire(Language, ['languageService']);
 
 ## advanced usage
 
-### listen for changes
-
-* `hoc/language.hoc.js`
+### listening to changes
 
 ```js
+// hoc/language.hoc.js
+
 import React, { PureComponent } from 'react';
 import { wire } from 'react-hot-wire';
 
@@ -93,9 +120,9 @@ export default function (Component) {
 export default wire(LanguageHOC, ['languageService']);
 ```
 
-* `components/language.component.js`
-
 ```js
+// components/language.component.js
+
 import React, { PureComponent } from 'react';
 import LanguageHOC from 'hoc/language.hoc';
 
@@ -108,9 +135,11 @@ export class Language extends PureComponent {
 export default LanguageHOC(Language);
 ```
 
-* and small modification in `services/language.service.js` (extends for a `Service`)
+* and small modification in the example service (extends for a `Service`)
 
 ```js
+// services/language.service.js
+
 import { Service } from 'react-hot-wire';
 
 export default class LanguageService extends Service {
