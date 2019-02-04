@@ -175,15 +175,21 @@ export default LanguageHOC(Language);
 
 ## API interface
 
-### `Provider`
+### `<Provider>`
 
 * property `services: Object<string, Object>` - services after a resolved container
 
-### `wire`
+### `<Wire>`
+
+* property `services: string[]`
+
+* property `render: (services: Object<string, Object>): Component`
+
+### `wire()`
 
 * `wire(Component: Component, dependencies: string[]): Component`
 
-### `Service`
+### `class Service`
 
 * `addChangeListener(changeListener: Function): Function`
 
