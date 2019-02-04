@@ -87,7 +87,28 @@ export class Language extends PureComponent {
     }
 };
 
-export default wire(Language, ['languageService']);
+export default wire(['languageService'], Language);
+```
+
+or simply:
+
+```js
+import React, { PureComponent } from 'react';
+import { Wire } from 'react-hot-wire';
+import Language from 'components/language.component';
+
+export class App extends PureComponent {
+    render() {
+        return (
+            <Wire
+                services={['languageService']}
+                render={({ languageService }) => (
+                    <Language lang={languageService.currentLanguage()} />
+                )}
+            />
+        );
+    }
+};
 ```
 
 Now we have injected the selected service into the component, and we can take full advantage of its capabilities. As the service was injected by props, we have the possibility of convenient component testing, substitution of this service, etc.
@@ -102,8 +123,9 @@ Now we have injected the selected service into the component, and we can take fu
 import React, { PureComponent } from 'react';
 import { wire } from 'react-hot-wire';
 
-export default function (Component) {
-    return class LanguageHOC extends PureComponent {
+export default Component => wire(
+    ['languageService'],
+    class LanguageHOC extends PureComponent {
         componentDidMount() {
             this._unregisterListener = this.props.languageService.addChangeListener(
                 () => this.forceUpdate()
@@ -122,10 +144,8 @@ export default function (Component) {
         componentWillUnmount() {
             this._unregisterListener();
         }
-    };
-};
-
-export default wire(LanguageHOC, ['languageService']);
+    }
+);
 ```
 
 ```js

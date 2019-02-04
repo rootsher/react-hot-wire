@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 export const createInstance = () => {
 	const Context = React.createContext();
 
-	function find(services, dependencies) {
+	function find(dependencies, services) {
 		return dependencies.reduce((result, dependency) => {
 			result[dependency] = services[dependency];
 
@@ -31,10 +31,25 @@ export const createInstance = () => {
 		}
 	}
 
-	function wire(Component, dependencies) {
+	class Wire extends PureComponent {
+        static propTypes = {
+            services: PropTypes.arrayOf(PropTypes.string),
+            render: PropTypes.func.isRequired,
+        };
+
+        render() {
+            return (
+                <Context.Consumer>
+                    {services => this.props.render(find(this.props.services, services))}
+                </Context.Consumer>
+            );
+        }
+    }
+
+	function wire(dependencies, Component) {
 		return props => (
 			<Context.Consumer>
-				{services => <Component {...find(services || {}, dependencies)} {...props} />}
+				{services => <Component {...find(dependencies, services)} {...props} />}
 			</Context.Consumer>
 		);
 	}
@@ -59,9 +74,10 @@ export const createInstance = () => {
 
 	return {
 		Provider,
+        Wire,
 		wire,
 		Service,
 	};
 };
 
-export const {Provider, wire, Service} = createInstance();
+export const {Provider, Wire, wire, Service} = createInstance();
