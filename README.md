@@ -35,7 +35,7 @@ Example service:
 
 export default class LanguageService {
     _currentLanguage = 'en';
-    
+
     currentLanguage() {
         return this._currentLanguage;
     }
@@ -54,7 +54,7 @@ import LanguageService from 'services/language.service';
 
 const container = new HotWire().wire({
     services: {
-    	// this is example usage, we can store definitions whenever we want
+        // this is example usage, we can store definitions whenever we want
         languageService: {
             class: LanguageService,
             public: true,
@@ -65,9 +65,7 @@ const container = new HotWire().wire({
 
 container.then(services => {
     ReactDOM.render(
-        <Provider services={services}>
-            {/* application code here */}
-        </Provider>,
+        <Provider services={services}>{/* application code here */}</Provider>,
         document.getElementById('app')
     );
 });
@@ -78,14 +76,12 @@ Now you would like to inject into a component, at any level, an instance of a se
 ```js
 // components/language.component.js
 
-import React, { PureComponent } from 'react';
+import React from 'react';
 import { wire } from 'react-hot-wire';
 
-export class Language extends PureComponent {
-    render() {
-        return this.props.languageService.currentLanguage();
-    }
-};
+function Language({ languageService }) {
+    return languageService.currentLanguage();
+}
 
 export default wire(['languageService'], Language);
 ```
@@ -93,22 +89,19 @@ export default wire(['languageService'], Language);
 or simply:
 
 ```js
-import React, { PureComponent } from 'react';
+import React from 'react';
 import { Wire } from 'react-hot-wire';
+
 import Language from 'components/language.component';
 
-export class App extends PureComponent {
-    render() {
-        return (
-            <Wire
-                services={['languageService']}
-                render={({ languageService }) => (
-                    <Language lang={languageService.currentLanguage()} />
-                )}
-            />
-        );
-    }
-};
+export function App() {
+    return (
+        <Wire
+            services={['languageService']}
+            render={({ languageService }) => <Language lang={languageService.currentLanguage()} />}
+        />
+    );
+}
 ```
 
 Now we have injected the selected service into the component, and we can take full advantage of its capabilities. As the service was injected by props, we have the possibility of convenient component testing, substitution of this service, etc.
@@ -120,50 +113,32 @@ Now we have injected the selected service into the component, and we can take fu
 ```js
 // hoc/language.hoc.js
 
-import React, { PureComponent } from 'react';
+import React, { useEffect } from 'react';
 import { wire } from 'react-hot-wire';
 
-export default Component => wire(
-    ['languageService'],
-    class LanguageHOC extends PureComponent {
-        componentDidMount() {
-            this._unregisterListener = this.props.languageService.addChangeListener(
-                () => this.forceUpdate()
-            );
-        }
+export default Component =>
+    wire(['languageService'], function LanguageHOC({ languageService, ...props }) {
+        useEffect(() => {
+            return languageService.addChangeListener(() => {} /* do something... */);
+        });
 
-        render() {
-            return (
-                <Component
-                    lang={this.props.languageService.currentLanguage()}
-                    {...this.props}
-                />
-            );
-        }
-
-        componentWillUnmount() {
-            this._unregisterListener();
-        }
-    }
-);
+        return <Component lang={languageService.currentLanguage()} {...props} />;
+    });
 ```
 
 ```js
 // components/language.component.js
 
-import React, { PureComponent } from 'react';
 import LanguageHOC from 'hoc/language.hoc';
 
-export class Language extends PureComponent {
-    render() {
-        return this.props.lang;
-    }
-};
+export function Language({ lang }) {
+    return lang;
+}
 
 export default LanguageHOC(Language);
 ```
 
-* and small modification in the example service (extends for a `Service`)
+-   and small modification in the example service (extends for a `Service`)
 
 ```diff
 - export default class LanguageService {
@@ -177,20 +152,20 @@ export default LanguageHOC(Language);
 
 ### `<Provider>`
 
-* property `services: Object<string, Object>` - services after a resolved container
+-   property `services: Object<string, Object>` - services after a resolved container
 
 ### `<Wire>`
 
-* property `services: string[]`
+-   property `services: string[]`
 
-* property `render: (services: Object<string, Object>): Component`
+-   property `render: (services: Object<string, Object>): Component`
 
 ### `wire()`
 
-* `wire(Component: Component, dependencies: string[]): Component`
+-   `wire(Component: Component, dependencies: string[]): Component`
 
 ### `class Service`
 
-* `addChangeListener(changeListener: Function): Function`
+-   `addChangeListener(changeListener: Function): Function`
 
-* `runChangeListeners(): void`
+-   `runChangeListeners(): void`
