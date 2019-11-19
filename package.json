@@ -1,6 +1,6 @@
 {
   "name": "react-hot-wire",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "Dependency Injection in React with hot-wire",
   "scripts": {
     "build": "babel src --out-dir lib",
@@ -27,14 +27,14 @@
   },
   "homepage": "https://github.com/rootsher/react-hot-wire#readme",
   "dependencies": {
-    "prop-types": "~15.6.2",
-    "react": "~16.5.2"
+    "react": "^16.12.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.1.2",
     "@babel/core": "^7.1.2",
     "@babel/plugin-proposal-class-properties": "^7.1.0",
     "@babel/preset-env": "^7.1.0",
-    "@babel/preset-react": "^7.0.0"
+    "@babel/preset-react": "^7.0.0",
+    "prettier": "^1.19.1"
   }
 }

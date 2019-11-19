@@ -1,8 +1,7 @@
-import React, {PureComponent} from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
 
 export const createInstance = () => {
-	const Context = React.createContext();
+	const Context = React.createContext({});
 
 	function find(dependencies, services) {
 		return dependencies.reduce((result, dependency) => {
@@ -12,39 +11,15 @@ export const createInstance = () => {
 		}, {});
 	}
 
-	class Provider extends PureComponent {
-		static propTypes = {
-			services: PropTypes.object.isRequired,
-			children: PropTypes.oneOfType([
-				PropTypes.arrayOf(PropTypes.node),
-				PropTypes.node,
-				PropTypes.func,
-			]),
-		};
-
-		render() {
-			return (
-				<Context.Provider value={this.props.services}>
-					{this.props.children}
-				</Context.Provider>
-			);
-		}
+	function Provider({ services, children }) {
+		return <Context.Provider value={services}>{children}</Context.Provider>;
 	}
 
-	class Wire extends PureComponent {
-        static propTypes = {
-            services: PropTypes.arrayOf(PropTypes.string),
-            render: PropTypes.func.isRequired,
-        };
-
-        render() {
-            return (
-                <Context.Consumer>
-                    {services => this.props.render(find(this.props.services, services))}
-                </Context.Consumer>
-            );
-        }
-    }
+	function Wire({ services }) {
+		return (
+			<Context.Consumer> {_services => this.props.render(find(services, _services))}</Context.Consumer>
+		);
+	}
 
 	function wire(dependencies, Component) {
 		return props => (
@@ -68,16 +43,16 @@ export const createInstance = () => {
 		}
 
 		_unregisterListener(changeListener) {
-			this._changeListeners = this._changeListeners.filter(listener => (listener !== changeListener));
+			this._changeListeners = this._changeListeners.filter(listener => listener !== changeListener);
 		}
 	}
 
 	return {
 		Provider,
-        Wire,
+		Wire,
 		wire,
 		Service,
 	};
 };
 
-export const {Provider, Wire, wire, Service} = createInstance();
+export const { Provider, Wire, wire, Service } = createInstance();
